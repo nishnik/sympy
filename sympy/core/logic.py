@@ -324,7 +324,7 @@ class AndOr_Base(Logic):
                 break
             if isinstance(arg, Logic):
                 if isinstance(arg, cls):
-                    args_queue.extend(arg.args)
+                    res.extend(arg.args)
                     continue
             res.append(arg)
 
@@ -337,7 +337,7 @@ class And(AndOr_Base):
 
     def _eval_propagate_not(self):
         # !(a&b&c ...) == !a | !b | !c ...
-        return Or( *[Not(a) for a in self.args] )
+        return Logic.__new__(Or, *[Not(a) for a in self.args] )
 
     # (a|b|...) & c == (a&c) | (b&c) | ...
     def expand(self):
@@ -365,7 +365,7 @@ class Or(AndOr_Base):
 
     def _eval_propagate_not(self):
         # !(a|b|c ...) == !a & !b & !c ...
-        return And( *[Not(a) for a in self.args] )
+        return Logic.__new__(And, *[Not(a) for a in self.args] )
 
 
 class Not(Logic):
